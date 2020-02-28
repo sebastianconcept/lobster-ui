@@ -1,8 +1,9 @@
 <script>
-  import { createView, getViewUrl } from "../../utils";
-  function openTool(selector) {
-    const view = createView(getViewUrl(selector));
-    view.show();
+  import { connect, isConnected, openTool } from "../../bridge";
+  import { onMount } from "svelte";
+
+  function onConnect() {
+    connect();
   }
 
   function onOpenWorkspace() {
@@ -15,9 +16,14 @@
   function onOpenInspector() {
     openTool("inspector");
   }
+
+  function onOpenREPL() {
+    openTool("REPL");
+  }
 </script>
 
 <h1>Projects</h1>
 <button on:click={onOpenWorkspace}>Open workspace</button>
 <button on:click={onOpenTranscript}>Open transcript</button>
 <button on:click={onOpenInspector}>Open inspector</button>
+<button on:click={onOpenREPL}>Open REPL</button>

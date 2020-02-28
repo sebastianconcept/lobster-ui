@@ -4,6 +4,14 @@ const BrowserWindow = remote.BrowserWindow
 
 export const views = []
 
+export const newHash = () =>
+  Math.random()
+    .toString(36)
+    .substring(2, 15) +
+  Math.random()
+    .toString(36)
+    .substring(2, 15)
+
 export const getViewUrl = selector => {
   return `file://${path.join(__dirname, `/view.html#${selector}`)}`
 }

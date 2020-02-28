@@ -1,11 +1,18 @@
 <script>
+  import { onMount } from "svelte";
+
   import Projects from "./views/Projects/index.svelte";
   import Workspace from "./views/Workspace/index.svelte";
   import Transcript from "./views/Transcript/index.svelte";
   import Inspector from "./views/Inspector/index.svelte";
+  import REPL from "./views/REPL/index.svelte";
   import { views, getViewUrl } from "./utils";
 
   export let url = new URL(location.href);
+  let propio;
+  let child;
+
+  onMount(() => {});
 </script>
 
 <style>
@@ -30,13 +37,6 @@
   }
 </style>
 
-<!-- <h1>Hello {name}!</h1>
-  <p>
-    Visit the
-    <a href="https://svelte.dev/tutorial">Svelte tutorial</a>
-    to learn how to build Svelte apps.
-  </p> -->
-
 <main>
   <!-- <p>{JSON.stringify(location.href, 0, 2)}</p>
   <strong>{url.hash}</strong> -->
@@ -52,7 +52,8 @@
     {#if url.hash === '#inspector'}
       <Inspector />
     {/if}
+    {#if url.hash === '#REPL'}
+      <REPL bind:this={child} self={child} />
+    {/if}
   {/if}
 </main>
-
-<!-- <button on:click={onOpenInspector}>Open inspector!</button> -->
