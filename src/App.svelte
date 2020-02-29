@@ -38,8 +38,6 @@
 </style>
 
 <main>
-  <!-- <p>{JSON.stringify(location.href, 0, 2)}</p>
-  <strong>{url.hash}</strong> -->
   {#if !url.hash}
     <Projects />
   {:else}

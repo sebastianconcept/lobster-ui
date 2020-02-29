@@ -1,6 +1,5 @@
 <script>
   import { openTool } from "../../utils";
-  import { onMount } from "svelte";
 
   function onOpenWorkspace() {
     openTool("workspace");

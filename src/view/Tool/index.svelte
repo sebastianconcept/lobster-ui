@@ -2,11 +2,14 @@
   import { onMount } from "svelte";
   import { newHash, getServerUrl } from "./../../utils";
   import { createEventDispatcher } from "svelte";
+  import { sendHandshake } from "./../../bridge";
+
   const dispatch = createEventDispatcher();
 
   export const id = newHash();
   export let socket = null;
   export let status = "Disconnected";
+  export let viewType = "undefined view type";
 
   function isConnected(socket) {
     return socket && socket.readyState === 1;
@@ -21,6 +24,7 @@
       socket = new WebSocket(getServerUrl());
       observeSocket(socket);
       socket.addEventListener("open", () => {
+        sendHandshake(socket, id, viewType);
         dispatch("connected", socket);
       });
     }

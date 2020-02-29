@@ -1,21 +1,18 @@
 <script>
   import { onMount } from "svelte";
   import Tool from "./../Tool/index.svelte";
+  import { sendDoIt } from "./../../bridge";
 
   export let socket = null;
-  let message = "";
+  let sourceCode = "";
   let answer = "";
 
-  export const onSocketConnected = socket => {
-    console.log("REPL tool connected!");
-  };
-
-  function onConnected(event) {
-    socket.send("Hello from REPL sir!");
+  function onKeyUp(event) {
+    event.keyCode === 13 ? onDoIt() : null;
   }
 
-  function onSend() {
-    socket.send(message);
+  function onDoIt() {
+    sendDoIt(socket, sourceCode);
   }
 
   function onServerMessage(event) {
@@ -23,13 +20,12 @@
   }
 </script>
 
-<Tool
-  let:id
-  on:connected={onConnected}
-  on:servermessage={onServerMessage}
-  bind:socket>
+<Tool let:id on:servermessage={onServerMessage} bind:socket viewType="REPL">
   <h1>REPL</h1>
   <strong>{answer}</strong>
-  <input bind:value={message} placeholder="Message to send" />
-  <button on:click={onSend}>Send message</button>
+  <input
+    bind:value={sourceCode}
+    placeholder="Evaluate in Smalltalk..."
+    on:keyup={onKeyUp} />
+  <button on:click={onDoIt}>DoIt</button>
 </Tool>
