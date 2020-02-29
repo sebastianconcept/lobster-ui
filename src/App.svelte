@@ -1,11 +1,11 @@
 <script>
   import { onMount } from "svelte";
 
-  import Projects from "./views/Projects/index.svelte";
-  import Workspace from "./views/Workspace/index.svelte";
-  import Transcript from "./views/Transcript/index.svelte";
-  import Inspector from "./views/Inspector/index.svelte";
-  import REPL from "./views/REPL/index.svelte";
+  import Projects from "./view/Projects/index.svelte";
+  import Workspace from "./view/tool/Workspace/index.svelte";
+  import Transcript from "./view/tool/Transcript/index.svelte";
+  import Inspector from "./view/tool/Inspector/index.svelte";
+  import REPL from "./view/tool/REPL/index.svelte";
   import { views, getViewUrl } from "./utils";
 
   export let url = new URL(location.href);

@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
-  import { newHash } from "./../../utils";
-  import { isConnected, connect } from "./../../bridge";
+  import { newHash } from "./../../../utils";
+  import { isConnected, connect } from "./../../../bridge";
 
   export const id = newHash();
   export const toolSelector = "repl";
