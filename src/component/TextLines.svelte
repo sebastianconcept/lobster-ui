@@ -29,6 +29,7 @@
   div {
     overflow: auto;
     align-self: end;
+    margin: 0 0.3em;
   }
 </style>
 

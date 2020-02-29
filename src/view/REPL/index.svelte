@@ -7,14 +7,52 @@
   export let socket = null;
   let sourceCode = "";
   let answers = [];
+  let commandHistory = [];
+  let historyIndex;
+
+  const keyMap = {
+    13: onDoIt,
+    38: onArrowUp,
+    40: onArrowDown
+  };
 
   function onKeyUp(event) {
-    event.keyCode === 13 ? onDoIt() : null;
+    keyMap[event.keyCode] ? keyMap[event.keyCode]() : null;
+  }
+
+  function onArrowUp() {
+    historyPrevious();
+  }
+  function onArrowDown() {
+    historyNext();
   }
 
   function onDoIt() {
+    commandHistory = [...commandHistory, sourceCode];
     sendDoIt(socket, sourceCode);
     sourceCode = "";
+  }
+
+  function historyNext() {
+    const next = commandHistory[getHistoryIndex() + 1];
+    if (next) {
+      sourceCode = next;
+      historyIndex = historyIndex + 1;
+    }
+  }
+
+  function historyPrevious() {
+    const last = commandHistory[getHistoryIndex() - 1];
+    if (last) {
+      sourceCode = last;
+      historyIndex = historyIndex - 1;
+    }
+  }
+
+  function getHistoryIndex() {
+    return !historyIndex
+      ? (historyIndex = commandHistory.length - 1)
+      : historyIndex;
   }
 
   function onServerMessage(event) {

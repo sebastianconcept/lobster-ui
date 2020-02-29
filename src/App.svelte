@@ -17,7 +17,6 @@
 
 <style>
   main {
-    background-color: #ddd;
     height: 100%;
   }
 </style>
