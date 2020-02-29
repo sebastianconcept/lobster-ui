@@ -2,6 +2,9 @@ const path = require('path')
 const remote = require('electron').remote
 const BrowserWindow = remote.BrowserWindow
 
+const HOSTNAME = 'localhost'
+const PORT = 1701
+
 export const views = []
 
 export const newHash = () =>
@@ -11,6 +14,11 @@ export const newHash = () =>
   Math.random()
     .toString(36)
     .substring(2, 15)
+
+// Returns the URL string for connecting a WebSocket to the server, exclusive to the given tool
+export const getServerUrl = () => {
+  return `ws://${HOSTNAME}:${PORT}`
+}
 
 export const getViewUrl = selector => {
   return `file://${path.join(__dirname, `/view.html#${selector}`)}`
@@ -39,4 +47,10 @@ function createBrowserWindow (url, options = defaultBrowserWindowOptions) {
     removeView(newBrowserWindow)
   })
   return newBrowserWindow
+}
+
+export const openTool = selector => {
+  const view = createView(getViewUrl(selector))
+  view.show()
+  return view
 }

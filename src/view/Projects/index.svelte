@@ -1,10 +1,6 @@
 <script>
-  import { connect, isConnected, openTool } from "../../bridge";
+  import { openTool } from "../../utils";
   import { onMount } from "svelte";
-
-  function onConnect() {
-    connect();
-  }
 
   function onOpenWorkspace() {
     openTool("workspace");

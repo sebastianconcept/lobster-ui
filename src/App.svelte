@@ -2,10 +2,10 @@
   import { onMount } from "svelte";
 
   import Projects from "./view/Projects/index.svelte";
-  import Workspace from "./view/tool/Workspace/index.svelte";
-  import Transcript from "./view/tool/Transcript/index.svelte";
-  import Inspector from "./view/tool/Inspector/index.svelte";
-  import REPL from "./view/tool/REPL/index.svelte";
+  import Workspace from "./view/Workspace/index.svelte";
+  import Transcript from "./view/Transcript/index.svelte";
+  import Inspector from "./view/Inspector/index.svelte";
+  import REPL from "./view/REPL/index.svelte";
   import { views, getViewUrl } from "./utils";
 
   export let url = new URL(location.href);
@@ -53,7 +53,8 @@
       <Inspector />
     {/if}
     {#if url.hash === '#REPL'}
-      <REPL bind:this={child} self={child} />
+      <!-- <REPL bind:this={child} self={child} /> -->
+      <REPL />
     {/if}
   {/if}
 </main>
