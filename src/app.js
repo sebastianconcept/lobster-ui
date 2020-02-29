@@ -3,7 +3,6 @@ const path = require('path')
 
 let mainWindow
 let watcher
-let socket = null
 
 if (process.env.NODE_ENV === 'development') {
   watcher = require('chokidar').watch(path.join(__dirname, '../public/build'), {
@@ -20,8 +19,8 @@ function createWindow () {
     webPreferences: {
       nodeIntegration: true
     },
-    width: 900,
-    height: 680
+    width: 720,
+    height: 368
   })
 
   mainWindow.loadURL(`file://${path.join(__dirname, '../public/index.html')}`)

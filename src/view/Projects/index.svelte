@@ -1,5 +1,8 @@
 <script>
+  import { onMount } from "svelte";
   import { openTool } from "../../utils";
+
+  onMount(() => (document.title = "Lobster"));
 
   function onOpenWorkspace() {
     openTool("workspace");
@@ -17,8 +20,8 @@
   }
 </script>
 
-<h1>Projects</h1>
-<button on:click={onOpenWorkspace}>Open workspace</button>
-<button on:click={onOpenTranscript}>Open transcript</button>
-<button on:click={onOpenInspector}>Open inspector</button>
+<h2>Projects</h2>
+<button on:click={onOpenWorkspace} disabled>Open workspace</button>
+<button on:click={onOpenTranscript} disabled>Open transcript</button>
+<button on:click={onOpenInspector} disabled>Open inspector</button>
 <button on:click={onOpenREPL}>Open REPL</button>

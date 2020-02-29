@@ -20,7 +20,12 @@
   }
 </script>
 
-<Tool let:id on:servermessage={onServerMessage} bind:socket viewType="REPL">
+<Tool
+  let:id
+  on:servermessage={onServerMessage}
+  bind:socket
+  viewType="REPL"
+  toolName="REPL">
   <h1>REPL</h1>
   <strong>{answer}</strong>
   <input
