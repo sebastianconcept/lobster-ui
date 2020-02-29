@@ -1,11 +1,12 @@
 <script>
   import { onMount } from "svelte";
   import Tool from "./../Tool/index.svelte";
-  import { sendDoIt } from "./../../bridge";
+  import TextLines from "./../../component/TextLines.svelte";
+  import { sendDoIt, parsed } from "./../../bridge";
 
   export let socket = null;
   let sourceCode = "";
-  let answer = "";
+  let answers = [];
 
   function onKeyUp(event) {
     event.keyCode === 13 ? onDoIt() : null;
@@ -17,15 +18,21 @@
   }
 
   function onServerMessage(event) {
-    answer = event.detail;
+    const response = parsed(event.detail);
+    if (response.messageType === "Handshake" && response.answer) {
+      return;
+    }
+    // This apparently redundant assignation is there to help Svelte detect that ansewrs changed
+    // https://svelte.dev/tutorial/updating-arrays-and-objects
+    answers = [...answers, response.answer];
+  }
+
+  function focus(element) {
+    element.focus();
   }
 </script>
 
 <style>
-  h1 {
-    color: green;
-  }
-
   .container {
     display: grid;
     height: 100%;
@@ -58,6 +65,9 @@
 </style>
 
 <div class="container">
+  <div>
+    <TextLines bind:lines={answers} />
+  </div>
 
   <Tool
     let:id
@@ -65,16 +75,13 @@
     bind:socket
     viewType="REPL"
     toolName="REPL">
-    <div>
-      <h1>REPL</h1>
-      <strong>{answer}</strong>
-    </div>
     <div class="bottom">
       <div class="intro">➜</div>
       <input
         bind:value={sourceCode}
         placeholder="Enter a Smalltalk expression..."
-        on:keyup={onKeyUp} />
+        on:keyup={onKeyUp}
+        use:focus />
       <div class="repl-button">
         <button on:click={onDoIt}>DoIt</button>
       </div>

@@ -12,3 +12,5 @@ export const sendDoIt = (socket, sourceCode) =>
     type: 'DoIt',
     sourceCode
   })
+
+export const parsed = rawAnswer => JSON.parse(rawAnswer)
