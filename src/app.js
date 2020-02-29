@@ -28,6 +28,7 @@ function createWindow () {
     watcher.close()
     watcher = null
     mainWindow = null
+    app.quit()
   })
 }
 
@@ -51,25 +52,6 @@ app.on('activate', () => {
     createWindow()
   }
 })
-
-app.onSocketConnected = socket => {
-  if (app.socket && app.socket.readyState === 1) {
-    throw new Error("There is already a socket and it's connected")
-  }
-  app.socket = socket
-}
-
-app.onSocketClosed = socket => {
-  app.socket = null
-}
-
-app.onSocketError = (socket, event) => {
-  console.log('Socket error:', event)
-}
-
-app.onSocketMessage = event => {
-  console.log(event.data)
-}
 
 module.exports = {
   app

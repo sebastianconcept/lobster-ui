@@ -5,6 +5,9 @@ const BrowserWindow = remote.BrowserWindow
 const HOSTNAME = 'localhost'
 const PORT = 1701
 
+const defaultWidth = 600
+const defaultHeight = 400
+
 export const views = []
 
 export const newHash = () =>
@@ -32,8 +35,8 @@ const defaultBrowserWindowOptions = {
   webPreferences: {
     nodeIntegration: true
   },
-  width: 900,
-  height: 680
+  width: defaultWidth,
+  height: defaultHeight
 }
 
 function removeView (browserWindow) {

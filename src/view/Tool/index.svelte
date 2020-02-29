@@ -53,5 +53,4 @@
   }
 </script>
 
-<h2>Tool</h2>
 <slot>Waiting for a concrete tool to compose this abstract tool</slot>
