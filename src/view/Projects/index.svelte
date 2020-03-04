@@ -5,18 +5,28 @@
   onMount(() => (document.title = "Lobster"));
 
   function onOpenWorkspace() {
-    openTool("workspace");
+    addView(openTool("workspace"));
   }
 
   function onOpenTranscript() {
-    openTool("transcript");
+    addView(openTool("transcript"));
   }
   function onOpenInspector() {
-    openTool("inspector");
+    addView(openTool("inspector"));
   }
 
   function onOpenREPL() {
-    openTool("REPL");
+    addView(openTool("REPL"));
+  }
+
+  function addView(view) {
+    view.on("closed", () => {
+      viewClosed();
+    });
+  }
+
+  function viewClosed() {
+    // save the view id somewhere so we can later the server can send us its state
   }
 </script>
 
@@ -34,7 +44,7 @@
 <section>
   <h2>Projects</h2>
   <button on:click={onOpenWorkspace} disabled>Open workspace</button>
-  <button on:click={onOpenTranscript} disabled>Open transcript</button>
+  <button on:click={onOpenTranscript}>Open transcript</button>
   <button on:click={onOpenInspector} disabled>Open inspector</button>
   <button on:click={onOpenREPL}>Open REPL</button>
 </section>

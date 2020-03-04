@@ -39,7 +39,7 @@ const defaultBrowserWindowOptions = {
   height: defaultHeight
 }
 
-function removeView (browserWindow) {
+export function removeView (browserWindow) {
   views.splice(views.indexOf(browserWindow), 1)
 }
 

@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import Tool from "./../Tool/index.svelte";
+  import View from "./../View/index.svelte";
   import TextLines from "./../../component/TextLines.svelte";
   import { sendDoIt, parsed } from "./../../bridge";
 
@@ -8,7 +8,7 @@
   let sourceCode = "";
   let answers = [];
   let commandHistory = [];
-  let historyIndex;
+  let historyIndex = 0;
 
   const keyMap = {
     13: onDoIt,
@@ -28,30 +28,38 @@
   }
 
   function onDoIt() {
+    if (!sourceCode.length) {
+      return;
+    }
     commandHistory = [...commandHistory, sourceCode];
     sendDoIt(socket, sourceCode);
+    updateHistoryIndex();
     sourceCode = "";
   }
 
+  function updateHistoryIndex() {
+    historyIndex = commandHistory.length;
+  }
+
   function historyNext() {
-    const next = commandHistory[getHistoryIndex() + 1];
-    if (next) {
-      sourceCode = next;
-      historyIndex = historyIndex + 1;
-    }
+    const index = getHistoryIndex();
+    console.log(index, commandHistory.length, commandHistory);
+    const next = commandHistory[index - 1];
+    next ? (sourceCode = next) : null;
+    index < commandHistory.length ? (historyIndex = index + 1) : null;
   }
 
   function historyPrevious() {
-    const last = commandHistory[getHistoryIndex() - 1];
-    if (last) {
-      sourceCode = last;
-      historyIndex = historyIndex - 1;
-    }
+    const index = getHistoryIndex();
+    console.log(index, commandHistory.length, commandHistory);
+    const last = commandHistory[index - 1];
+    last ? (sourceCode = last) : null;
+    index - 1 >= 0 ? (historyIndex = index - 1) : null;
   }
 
   function getHistoryIndex() {
     return !historyIndex
-      ? (historyIndex = commandHistory.length - 1)
+      ? (historyIndex = commandHistory.length)
       : historyIndex;
   }
 
@@ -103,16 +111,16 @@
 </style>
 
 <div class="container">
-  <div>
-    <TextLines bind:lines={answers} />
-  </div>
 
-  <Tool
+  <View
     let:id
     on:servermessage={onServerMessage}
     bind:socket
     viewType="REPL"
     toolName="REPL">
+    <div>
+      <TextLines bind:lines={answers} />
+    </div>
     <div class="bottom">
       <div class="intro">➜</div>
       <input
@@ -124,5 +132,5 @@
         <button on:click={onDoIt}>DoIt</button>
       </div>
     </div>
-  </Tool>
+  </View>
 </div>
