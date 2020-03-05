@@ -43,8 +43,8 @@
 
 <section>
   <h2>Projects</h2>
-  <button on:click={onOpenWorkspace} disabled>Open workspace</button>
-  <button on:click={onOpenTranscript}>Open transcript</button>
-  <button on:click={onOpenInspector} disabled>Open inspector</button>
+  <button on:click={onOpenWorkspace}>Open Workspace</button>
+  <button on:click={onOpenTranscript}>Open Transcript</button>
+  <button on:click={onOpenInspector} disabled>Open Inspector</button>
   <button on:click={onOpenREPL}>Open REPL</button>
 </section>

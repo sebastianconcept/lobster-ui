@@ -1,5 +1,4 @@
 <script>
-  import { onMount } from "svelte";
   import View from "./../View/index.svelte";
   import TextLines from "./../../component/TextLines.svelte";
   import { sendDoIt, parsed } from "./../../bridge";
@@ -68,6 +67,10 @@
     if (response.messageType === "Handshake" && response.answer) {
       return;
     }
+    onREPLResponse(response);
+  }
+
+  function onREPLResponse(response) {
     // This apparently redundant assignation is there to help Svelte detect that ansewrs changed
     // https://svelte.dev/tutorial/updating-arrays-and-objects
     answers = [...answers, response.answer];

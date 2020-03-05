@@ -1,5 +1,4 @@
 <script>
-  import { onDestroy } from "svelte";
   import View from "./../View/index.svelte";
   import TextLines from "./../../component/TextLines.svelte";
   import { sendViewClosed, parsed } from "./../../bridge";
@@ -17,14 +16,8 @@
       return;
     }
     if (response.messageType === "TranscriptMessage" && response.payload) {
-      // This apparently redundant assignation is there to help Svelte detect that ansewrs changed
-      // https://svelte.dev/tutorial/updating-arrays-and-objects
       logs = [...logs, response.payload];
     }
-  }
-
-  function onUnload(event) {
-    debugger;
   }
 </script>
 

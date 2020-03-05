@@ -18,5 +18,16 @@ export const sendDoIt = (socket, sourceCode) =>
     type: 'DoIt',
     sourceCode
   })
+export const sendPrintIt = (socket, sourceCode) =>
+  sendMessage(socket, {
+    type: 'PrintIt',
+    sourceCode
+  })
+
+export const sendInspectIt = (socket, sourceCode) =>
+  sendMessage(socket, {
+    type: 'InspectIt',
+    sourceCode
+  })
 
 export const parsed = rawAnswer => JSON.parse(rawAnswer)
