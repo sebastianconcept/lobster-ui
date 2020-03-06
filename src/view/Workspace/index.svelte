@@ -1,4 +1,5 @@
 <script>
+  import { tick } from "svelte";
   import View from "./../View/index.svelte";
 
   import { sendDoIt, sendPrintIt, sendInspectIt, parsed } from "./../../bridge";
@@ -61,13 +62,15 @@
     return input.value.substring(start, finish);
   }
 
-  function insertAtCaret(text) {
+  async function insertAtCaret(text) {
     const input = document.getElementById("workspace");
     const before = content.substring(0, caretPosition);
     const after = content.substring(input.selectionEnd);
     content = before + text + after;
-    input.selectionStart = input.selectionEnd = caretPosition + text.length;
     input.focus();
+    await tick();
+    input.selectionStart = caretPosition;
+    input.selectionEnd = caretPosition + text.length;
   }
 
   function onInputCreated(textarea) {
