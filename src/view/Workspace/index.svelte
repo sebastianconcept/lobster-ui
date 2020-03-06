@@ -15,6 +15,12 @@
     PrintIt: onPrintItAnswer
   };
 
+  const actions = {
+    KeyD: onDoIt,
+    KeyP: onPrintIt,
+    KeyI: onInspectIt
+  };
+
   function onServerMessage(event) {
     const response = parsed(event.detail);
     if (response.messageType === "Handshake" && response.answer) {
@@ -23,12 +29,18 @@
     onResponse(response);
   }
 
-  function onDoIt() {
+  function onDoIt(event) {
+    if (!event.metaKey && event.type !== "click") {
+      return;
+    }
     sourceCode = getSelectedText();
     sourceCode.length ? sendDoIt(socket, sourceCode) : null;
   }
 
-  function onPrintIt() {
+  function onPrintIt(event) {
+    if (!event.metaKey && event.type !== "click") {
+      return;
+    }
     sourceCode = getSelectedText() || "";
     caretPosition = document.getElementById("workspace").selectionEnd;
     sourceCode.length ? sendPrintIt(socket, sourceCode) : null;
@@ -50,6 +62,11 @@
 
   function onPrintItAnswer(answer) {
     insertAtCaret(answer);
+  }
+
+  function onKeyDown(event) {
+    const action = actions[event.code];
+    action ? action(event) : null;
   }
 
   function getSelectedText() {
@@ -111,7 +128,11 @@
       <button on:click={onInspectIt} disabled>Inspect It</button>
     </div>
     <div class="content">
-      <textarea id="workspace" bind:value={content} use:onInputCreated />
+      <textarea
+        id="workspace"
+        bind:value={content}
+        on:keydown={onKeyDown}
+        use:onInputCreated />
     </div>
   </View>
 </div>
