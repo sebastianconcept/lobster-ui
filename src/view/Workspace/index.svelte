@@ -1,5 +1,5 @@
 <script>
-  import { tick } from "svelte";
+  import { tick, onMount } from "svelte";
   import View from "./../View/index.svelte";
 
   import { sendDoIt, sendPrintIt, sendInspectIt, parsed } from "./../../bridge";
@@ -7,12 +7,13 @@
   export let socket;
   export let content = "\n\n\n\n\n\n\n\n";
   let sourceCode = "";
-  let caretPosition;
+  let textarea;
   const protocol = {
     DoIt: () => {
       // no-op on do it answers
     },
-    PrintIt: onPrintItAnswer
+    PrintIt: onPrintItAnswer,
+    DoIt: onDoItAnswer
   };
 
   const actions = {
@@ -20,6 +21,10 @@
     KeyP: onPrintIt,
     KeyI: onInspectIt
   };
+
+  onMount(() => {
+    textarea = document.getElementById("workspace");
+  });
 
   function onServerMessage(event) {
     const response = parsed(event.detail);
@@ -33,7 +38,7 @@
     if (!event.metaKey && event.type !== "click") {
       return;
     }
-    sourceCode = getSelectedText();
+    sourceCode = getSourceCode(textarea);
     sourceCode.length ? sendDoIt(socket, sourceCode) : null;
   }
 
@@ -41,13 +46,12 @@
     if (!event.metaKey && event.type !== "click") {
       return;
     }
-    sourceCode = getSelectedText() || "";
-    caretPosition = document.getElementById("workspace").selectionEnd;
+    sourceCode = getSourceCode(textarea);
     sourceCode.length ? sendPrintIt(socket, sourceCode) : null;
   }
 
   function onInspectIt() {
-    sourceCode = getSelectedText();
+    sourceCode = getSourceCode(textarea);
     sourceCode.length ? sendInspectIt(socket, sourceCode) : null;
   }
 
@@ -60,8 +64,13 @@
     }
   }
 
+  function onDoItAnswer(answer) {
+    caretToEndOfLine(textarea);
+  }
+
   function onPrintItAnswer(answer) {
-    insertAtCaret(answer);
+    caretToEndOfLine(textarea);
+    insertAtCaret(answer, textarea);
   }
 
   function onKeyDown(event) {
@@ -69,25 +78,57 @@
     action ? action(event) : null;
   }
 
-  function getSelectedText() {
-    const input = document.getElementById("workspace");
-    // obtain the index of the first selected character
-    const start = input.selectionStart;
-    // obtain the index of the last selected character
-    const finish = input.selectionEnd;
-    // obtain the selected text
-    return input.value.substring(start, finish);
+  // Returns the source code either from a specific selection or,
+  // when no specific selection is found,
+  // it returns the code corresponding to the full line of the caret position.
+  function getSourceCode(textarea) {
+    const text = getSelectedText(textarea);
+    return text.length ? text : getSourceCodeAtCaretPosition(textarea);
   }
 
-  async function insertAtCaret(text) {
-    const input = document.getElementById("workspace");
+  function getSourceCodeAtCaretPosition(textarea) {
+    const lineNumber = getCaretLineNumner(textarea);
+    return textarea.value.split("\n")[lineNumber - 1];
+  }
+
+  function getSelectedText(textarea) {
+    // obtain the index of the first selected character
+    const start = textarea.selectionStart;
+    // obtain the index of the last selected character
+    const finish = textarea.selectionEnd;
+    // obtain the selected text
+    return textarea.value.substring(start, finish);
+  }
+
+  function caretToEndOfLine(textarea) {
+    const linePosition = getCaretLineNumner(textarea);
+    const lines = textarea.value.split("\n").slice(0, linePosition);
+    const sizeUpToLineOfCaret = lines.reduce(function(acum, line) {
+      return acum + line.length;
+    }, 0);
+    const remainintToEndOfCurrentLine =
+      lines.length + sizeUpToLineOfCaret - textarea.selectionEnd;
+    textarea.selectionStart = textarea.selectionEnd =
+      textarea.selectionEnd + remainintToEndOfCurrentLine - 1;
+  }
+
+  function getCaretLineNumner(textarea) {
+    return getTextFullLinesUpToCarent(textarea).length;
+  }
+
+  function getTextFullLinesUpToCarent(textarea) {
+    return textarea.value.substr(0, textarea.selectionStart).split("\n");
+  }
+
+  async function insertAtCaret(text, textarea) {
+    const caretPosition = textarea.selectionStart;
     const before = content.substring(0, caretPosition);
-    const after = content.substring(input.selectionEnd);
+    const after = content.substring(textarea.selectionEnd);
     content = before + text + after;
-    input.focus();
+    textarea.focus();
     await tick();
-    input.selectionStart = caretPosition;
-    input.selectionEnd = caretPosition + text.length;
+    textarea.selectionStart = caretPosition;
+    textarea.selectionEnd = caretPosition + text.length;
   }
 
   function onInputCreated(textarea) {
