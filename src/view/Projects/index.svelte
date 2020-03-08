@@ -1,32 +1,19 @@
 <script>
   import { onMount } from "svelte";
-  import { openTool } from "../../utils";
+  import { openView } from "../../utils";
 
   onMount(() => (document.title = "Lobster"));
 
   function onOpenWorkspace() {
-    addView(openTool("workspace"));
+    openView("Workspace");
   }
 
   function onOpenTranscript() {
-    addView(openTool("transcript"));
-  }
-  function onOpenInspector() {
-    addView(openTool("inspector"));
+    openView("Transcript");
   }
 
   function onOpenREPL() {
-    addView(openTool("REPL"));
-  }
-
-  function addView(view) {
-    view.on("closed", () => {
-      viewClosed();
-    });
-  }
-
-  function viewClosed() {
-    // save the view id somewhere so we can later the server can send us its state
+    openView("REPL");
   }
 </script>
 
@@ -45,6 +32,6 @@
   <h2>Projects</h2>
   <button on:click={onOpenWorkspace}>Open Workspace</button>
   <button on:click={onOpenTranscript}>Open Transcript</button>
-  <button on:click={onOpenInspector} disabled>Open Inspector</button>
   <button on:click={onOpenREPL}>Open REPL</button>
+  <button on:click={() => openView('Inspector')}>Inspector</button>
 </section>

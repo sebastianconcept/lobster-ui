@@ -13,6 +13,10 @@
   let child;
 
   onMount(() => {});
+
+  function isForViewType(viewTypeName) {
+    return url.searchParams.get("viewType") === viewTypeName;
+  }
 </script>
 
 <style>
@@ -22,19 +26,19 @@
 </style>
 
 <main>
-  {#if !url.hash}
+  {#if !url.searchParams.has('viewType')}
     <Projects />
   {:else}
-    {#if url.hash === '#workspace'}
+    {#if isForViewType('Workspace')}
       <Workspace />
     {/if}
-    {#if url.hash === '#transcript'}
+    {#if isForViewType('Transcript')}
       <Transcript />
     {/if}
-    {#if url.hash === '#inspector'}
+    {#if isForViewType('Inspector')}
       <Inspector />
     {/if}
-    {#if url.hash === '#REPL'}
+    {#if isForViewType('REPL')}
       <!-- <REPL bind:this={child} self={child} /> -->
       <REPL />
     {/if}

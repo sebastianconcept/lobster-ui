@@ -30,4 +30,11 @@ export const sendInspectIt = (socket, sourceCode) =>
     sourceCode
   })
 
-export const parsed = rawAnswer => JSON.parse(rawAnswer)
+export const parsed = rawAnswer => {
+  const payload = JSON.parse(rawAnswer)
+  return {
+    messageType: payload.messageType,
+    answer: payload.answer,
+    payload: payload.payload
+  }
+}

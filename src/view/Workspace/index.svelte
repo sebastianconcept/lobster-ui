@@ -1,11 +1,12 @@
 <script>
   import { tick, onMount } from "svelte";
   import View from "./../View/index.svelte";
-
+  import { openView } from "../../utils";
   import { sendDoIt, sendPrintIt, sendInspectIt, parsed } from "./../../bridge";
 
   export let socket;
-  export let content = "\n\n\n\n\n\n\n\n";
+  export let content = "\n\n\n\n";
+  export let id;
   let sourceCode = "";
   let textarea;
   const protocol = {
@@ -13,7 +14,8 @@
       // no-op on do it answers
     },
     PrintIt: onPrintItAnswer,
-    DoIt: onDoItAnswer
+    DoIt: onDoItAnswer,
+    InspectIt: onInspectItAnswer
   };
 
   const actions = {
@@ -71,6 +73,11 @@
   function onPrintItAnswer(answer) {
     caretToEndOfLine(textarea);
     insertAtCaret(answer, textarea);
+  }
+
+  function onInspectItAnswer(answer) {
+    const view = openView("Inspector", { id });
+    console.dir(answer);
   }
 
   function onKeyDown(event) {
@@ -158,7 +165,7 @@
 
 <div class="container">
   <View
-    let:id
+    bind:id
     on:servermessage={onServerMessage}
     bind:socket
     viewType="Workspace"
@@ -166,7 +173,7 @@
     <div class="toolbar">
       <button on:click={onDoIt}>Do It</button>
       <button on:click={onPrintIt}>Print It</button>
-      <button on:click={onInspectIt} disabled>Inspect It</button>
+      <button on:click={onInspectIt}>Inspect It</button>
     </div>
     <div class="content">
       <textarea

@@ -23,8 +23,18 @@ export const getServerUrl = () => {
   return `ws://${HOSTNAME}:${PORT}`
 }
 
-export const getViewUrl = selector => {
-  return `file://${path.join(__dirname, `/view.html#${selector}`)}`
+export const getViewUrl = (selector, args = {}) => {
+  let queryParams = ''
+  args = {
+    viewType: selector,
+    ...args
+  }
+
+  Object.keys(args).forEach((key, index) => {
+    index > 0 ? (queryParams = `${queryParams}&`) : null
+    queryParams = `${queryParams}${key}=${encodeURIComponent(args[key])}`
+  })
+  return `file://${path.join(__dirname, `/view.html?${queryParams}`)}`
 }
 
 export const createView = (viewUrl, options) => {
@@ -52,8 +62,8 @@ function createBrowserWindow (url, options = defaultBrowserWindowOptions) {
   return newBrowserWindow
 }
 
-export const openTool = selector => {
-  const view = createView(getViewUrl(selector))
+export const openView = (selector, args) => {
+  const view = createView(getViewUrl(selector, args))
   view.show()
   return view
 }
