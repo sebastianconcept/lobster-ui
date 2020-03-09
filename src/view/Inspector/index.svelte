@@ -7,6 +7,7 @@
   export let socket;
   export let id;
   export let answer;
+  let sourceCode = "";
   let handshakeOptions;
 
   const params = new URLSearchParams(window.location.search);
@@ -25,6 +26,28 @@
   function onServerMessage() {}
 </script>
 
+<style>
+  .container {
+    display: grid;
+    height: 100%;
+    grid-template-rows: auto 80px;
+    grid-template-columns: 30% auto;
+    grid-template-areas:
+      "tree display"
+      "workspace workspace";
+  }
+
+  .workspace {
+    grid-row: 2;
+    grid-column: 1 / span 2;
+  }
+
+  .workspace textarea {
+    width: 100%;
+    height: 100%;
+  }
+</style>
+
 <div class="container">
   <View
     bind:id
@@ -39,12 +62,16 @@
       <button on:click={onInspectIt}>Inspect It</button>
     </div> -->
 
-    <h1>Inspector</h1>
-    <p>{id}</p>
-    {#if answer}
-      <p>{answer.id}</p>
+    <div class="tree">
+      <p>tree</p>
+    </div>
+    <div class="display">
       <p>{answer.inspectee}</p>
-    {/if}
+    </div>
+    <div class="workspace">
+      <textarea id="sourceCode" bind:value={sourceCode} />
+    </div>
+
     <!-- <div class="content">
       <textarea
         id="workspace"
