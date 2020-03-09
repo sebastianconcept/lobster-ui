@@ -53,6 +53,9 @@
   }
 
   function onInspectIt() {
+    if (!event.metaKey && event.type !== "click") {
+      return;
+    }
     sourceCode = getSourceCode(textarea);
     sourceCode.length ? sendInspectIt(socket, sourceCode) : null;
   }
@@ -76,8 +79,7 @@
   }
 
   function onInspectItAnswer(answer) {
-    const view = openView("Inspector", { id });
-    console.dir(answer);
+    openView("Inspector", { id, answer });
   }
 
   function onKeyDown(event) {

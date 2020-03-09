@@ -11,6 +11,7 @@
   export let status = "Disconnected";
   export let viewType = "undefined view type";
   export let toolName = "Unnamed tool";
+  export let handshakeOptions = {};
 
   function isConnected(webSocket) {
     return webSocket && webSocket.readyState === 1;
@@ -35,7 +36,7 @@
 
   function observeSocket(webSocket) {
     webSocket.addEventListener("open", () => {
-      sendHandshake(webSocket, id, viewType);
+      sendHandshake(webSocket, id, viewType, handshakeOptions);
       dispatch("connected", webSocket);
     });
 

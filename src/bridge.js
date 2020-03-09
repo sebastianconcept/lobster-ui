@@ -1,10 +1,11 @@
 const sendMessage = (socket, payload) => socket.send(JSON.stringify(payload))
 
-export const sendHandshake = (socket, id, viewType) =>
+export const sendHandshake = (socket, id, viewType, options = {}) =>
   sendMessage(socket, {
     type: 'Handshake',
     id,
-    viewType
+    viewType,
+    ...options
   })
 
 export const sendViewClosed = (socket, id) =>

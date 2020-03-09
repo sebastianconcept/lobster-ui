@@ -33,5 +33,4 @@
   <button on:click={onOpenWorkspace}>Open Workspace</button>
   <button on:click={onOpenTranscript}>Open Transcript</button>
   <button on:click={onOpenREPL}>Open REPL</button>
-  <button on:click={() => openView('Inspector')}>Inspector</button>
 </section>
