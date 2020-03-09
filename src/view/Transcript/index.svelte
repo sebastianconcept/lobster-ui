@@ -45,8 +45,7 @@
     let:id
     on:servermessage={onServerMessage}
     bind:socket
-    viewType="Transcript"
-    toolName="Transcript">
+    viewType="Transcript">
     <div class="toolbar">
       <button on:click={onClear}>Clear</button>
     </div>

@@ -10,7 +10,6 @@
   export let socket = null;
   export let status = "Disconnected";
   export let viewType = "undefined view type";
-  export let toolName = "Unnamed tool";
   export let handshakeOptions = {};
 
   function isConnected(webSocket) {
@@ -18,7 +17,7 @@
   }
 
   onMount(() => {
-    document.title = toolName;
+    document.title = `Unspecified ${viewType}`;
     socket = connect();
     observeSocket(socket);
     window.onbeforeunload = () => {

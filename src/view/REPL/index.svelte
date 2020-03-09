@@ -115,12 +115,7 @@
 
 <div class="container">
 
-  <View
-    let:id
-    on:servermessage={onServerMessage}
-    bind:socket
-    viewType="REPL"
-    toolName="REPL">
+  <View let:id on:servermessage={onServerMessage} bind:socket viewType="REPL">
     <div>
       <TextLines bind:lines={answers} />
     </div>

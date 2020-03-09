@@ -1,6 +1,8 @@
 <script>
   import { onMount } from "svelte";
   import View from "./../View/index.svelte";
+  import WorkspaceArea from "./../../component/WorkspaceArea.svelte";
+
   import { openView } from "../../utils";
   import { sendDoIt, sendPrintIt, sendInspectIt, parsed } from "./../../bridge";
 
@@ -54,8 +56,7 @@
     on:servermessage={onServerMessage}
     bind:handshakeOptions
     bind:socket
-    viewType="Inspector"
-    toolName="Inspector">
+    viewType="Inspector">
     <!-- <div class="toolbar">
       <button on:click={onDoIt}>Do It</button>
       <button on:click={onPrintIt}>Print It</button>
@@ -69,7 +70,7 @@
       <p>{answer.inspectee}</p>
     </div>
     <div class="workspace">
-      <textarea id="sourceCode" bind:value={sourceCode} />
+      <WorkspaceArea />
     </div>
 
     <!-- <div class="content">
