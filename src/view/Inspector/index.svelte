@@ -1,16 +1,28 @@
 <script>
   import { onMount } from "svelte";
   import View from "./../View/index.svelte";
+  import InstVarsTree from "./../../component/InstVarsTree.svelte";
   import WorkspaceArea from "./../../component/WorkspaceArea.svelte";
 
-  import { openView } from "../../utils";
+  import { newHash, openView } from "../../utils";
   import { sendDoIt, sendPrintIt, sendInspectIt, parsed } from "./../../bridge";
 
-  export let socket;
-  export let id;
+  export let id = newHash();
   export let answer;
-  let sourceCode = "";
   let handshakeOptions;
+
+  "Children";
+  let workspace = {
+    id: newHash(),
+    name: "workspace"
+  };
+
+  let instVarsTree = {
+    id: newHash(),
+    name: "instVarTree"
+  };
+
+  let sourceCode = "";
 
   const params = new URLSearchParams(window.location.search);
   if (!params.has("answer")) {
@@ -43,19 +55,14 @@
     grid-row: 2;
     grid-column: 1 / span 2;
   }
-
-  .workspace textarea {
-    width: 100%;
-    height: 100%;
-  }
 </style>
 
 <div class="container">
   <View
-    bind:id
+    {id}
+    {handshakeOptions}
+    children={{ instVarsTree, workspace }}
     on:servermessage={onServerMessage}
-    bind:handshakeOptions
-    bind:socket
     viewType="Inspector">
     <!-- <div class="toolbar">
       <button on:click={onDoIt}>Do It</button>
@@ -64,21 +71,13 @@
     </div> -->
 
     <div class="tree">
-      <p>tree</p>
+      <InstVarsTree id={instVarsTree.id} name={instVarsTree.name} />
     </div>
     <div class="display">
-      <p>{answer.inspectee}</p>
+      <div>{answer.inspectee}</div>
     </div>
     <div class="workspace">
-      <WorkspaceArea />
+      <WorkspaceArea id={workspace.id} name={workspace.name} />
     </div>
-
-    <!-- <div class="content">
-      <textarea
-        id="workspace"
-        bind:value={content}
-        on:keydown={onKeyDown}
-        use:onInputCreated />
-    </div> -->
   </View>
 </div>

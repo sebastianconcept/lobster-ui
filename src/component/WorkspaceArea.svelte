@@ -5,10 +5,13 @@
   import { sendDoIt, sendPrintIt, sendInspectIt, parsed } from "./../bridge";
 
   export let socket;
-  export let content = "";
   export let id;
+  export let name;
+
+  export let content = "";
   let sourceCode = "";
   let textarea;
+
   const protocol = {
     DoIt: () => {
       // no-op on do it answers
@@ -161,7 +164,8 @@
 
 <div class="container">
   <View
-    bind:id
+    {id}
+    {name}
     on:servermessage={onServerMessage}
     bind:socket
     viewType="Workspace">

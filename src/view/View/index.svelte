@@ -1,16 +1,19 @@
 <script>
   import { onMount } from "svelte";
-  import { newHash, getServerUrl } from "./../../utils";
+  import { getServerUrl } from "./../../utils";
   import { createEventDispatcher } from "svelte";
   import { sendViewClosed, sendHandshake } from "./../../bridge";
 
   const dispatch = createEventDispatcher();
 
-  export const id = newHash();
+  export let id;
+  export let name;
+  export let children = [];
   export let socket = null;
+  export let handshakeOptions = {};
   export let status = "Disconnected";
   export let viewType = "undefined view type";
-  export let handshakeOptions = {};
+  // export let handshakeOptions = {};
 
   function isConnected(webSocket) {
     return webSocket && webSocket.readyState === 1;
@@ -18,14 +21,18 @@
 
   onMount(() => {
     document.title = `Unspecified ${viewType}`;
-    socket = connect();
+    connect();
+  });
+
+  export const connect = function() {
+    socket = connectSocket();
     observeSocket(socket);
     window.onbeforeunload = () => {
       sendViewClosed(socket, id);
     };
-  });
+  };
 
-  function connect() {
+  function connectSocket() {
     return !isConnected(socket) ? new WebSocket(getServerUrl()) : socket;
   }
 
@@ -35,7 +42,8 @@
 
   function observeSocket(webSocket) {
     webSocket.addEventListener("open", () => {
-      sendHandshake(webSocket, id, viewType, handshakeOptions);
+      const options = { id, name, children, ...handshakeOptions };
+      sendHandshake(webSocket, id, viewType, options);
       dispatch("connected", webSocket);
     });
 
