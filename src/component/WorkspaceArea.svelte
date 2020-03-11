@@ -7,6 +7,7 @@
   export let socket;
   export let id;
   export let name;
+  export let title = "Workspace";
 
   export let content = "";
   let sourceCode = "";
@@ -166,6 +167,7 @@
   <View
     {id}
     {name}
+    {title}
     on:servermessage={onServerMessage}
     bind:socket
     viewType="Workspace">

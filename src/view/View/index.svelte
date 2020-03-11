@@ -13,14 +13,14 @@
   export let handshakeOptions = {};
   export let status = "Disconnected";
   export let viewType = "undefined view type";
-  // export let handshakeOptions = {};
+  export let title = `Unspecified ${viewType}`;
 
   function isConnected(webSocket) {
     return webSocket && webSocket.readyState === 1;
   }
 
   onMount(() => {
-    document.title = `Unspecified ${viewType}`;
+    document.title = title;
     connect();
   });
 
