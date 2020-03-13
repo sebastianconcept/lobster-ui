@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import View from "./../View/index.svelte";
-  import InstVarsTree from "./../../component/InstVarsTree.svelte";
+  import Introspector from "./../../component/Introspector.svelte";
   import WorkspaceArea from "./../../component/WorkspaceArea.svelte";
 
   import { newHash, openView } from "../../utils";
@@ -17,9 +17,9 @@
     name: "workspace"
   };
 
-  let instVarsTree = {
+  let introspector = {
     id: newHash(),
-    name: "instVarTree"
+    name: "introspector"
   };
 
   let sourceCode = "";
@@ -51,6 +51,11 @@
       "workspace workspace";
   }
 
+  .tree {
+    overflow-x: scroll;
+    white-space: nowrap;
+  }
+
   .workspace {
     grid-row: 2;
     grid-column: 1 / span 2;
@@ -61,20 +66,14 @@
   <View
     {id}
     {handshakeOptions}
-    children={{ instVarsTree, workspace }}
+    children={{ introspector, workspace }}
     on:servermessage={onServerMessage}
     viewType="Inspector">
-    <!-- <div class="toolbar">
-      <button on:click={onDoIt}>Do It</button>
-      <button on:click={onPrintIt}>Print It</button>
-      <button on:click={onInspectIt}>Inspect It</button>
-    </div> -->
-
     <div class="tree">
-      <InstVarsTree id={instVarsTree.id} name={instVarsTree.name} />
+      <Introspector id={introspector.id} name={introspector.name} />
     </div>
     <div class="display">
-      <div>{answer.inspectee}</div>
+      <div>{answer.inspecteePrintString}</div>
     </div>
     <div class="workspace">
       <WorkspaceArea id={workspace.id} name={workspace.name} />

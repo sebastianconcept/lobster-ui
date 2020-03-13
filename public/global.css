@@ -3,6 +3,9 @@ body {
   position: relative;
   width: 100%;
   height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+  font-size: 0.9em;
 }
 
 body {
@@ -10,8 +13,6 @@ body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
 }
 
 main {
@@ -44,8 +45,8 @@ textarea {
   font-size: inherit;
   margin: 0;
   box-sizing: border-box;
-  border: 1px solid #ccc;
-  border-radius: 2px;
+  /* border: 1px solid #ccc;
+  border-radius: 2px; */
 }
 
 textarea:focus,
