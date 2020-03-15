@@ -1,7 +1,12 @@
 <script>
+  import { createEventDispatcher } from "svelte";
+  const dispatch = createEventDispatcher();
+  export let node;
   export let isExpanded;
+
   function onClick() {
     isExpanded = !isExpanded;
+    isExpanded ? dispatch("expanded", node) : dispatch("collapsed", node);
   }
 </script>
 

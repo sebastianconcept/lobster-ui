@@ -4,9 +4,29 @@
   const dispatch = createEventDispatcher();
 
   export let roots;
+  export let fetchNodes;
+  let expanded = false;
   // export let onDrag;
   // export let onDrop;
   // export let onClick;
+
+  async function getNodes(node) {
+    const response = await fetchNodes(node);
+    const data = response.data;
+    if (response.ok) {
+      return data;
+    } else {
+      throw new Error(data);
+    }
+  }
+
+  function onExpanded(node) {
+    expanded = true;
+  }
+
+  function onCollapsed(node) {
+    expanded = false;
+  }
 
   function onLabelClick(node) {
     dispatch("nodeselected", node);
@@ -36,19 +56,40 @@
 {#if roots && roots.length}
   <ul>
     {#each roots as node}
-      <li>
-        {#if node.nodes}
-          <TreeArrow bind:isExpanded={node.isExpanded} />
-        {:else}
-          <div class="arrow-padding" />
-        {/if}
+      {#if node.nodes && node.nodes === '...'}
+        <TreeArrow
+          bind:isExpanded={node.isExpanded}
+          {node}
+          on:expanded={onExpanded}
+          on:collapsed={onCollapsed} />
         <div class="node-label" on:click={event => onLabelClick(node)}>
           {node.name} {node.printString}
         </div>
-        {#if node.nodes && node.isExpanded}
-          <svelte:self roots={node.nodes} />
+        {#if expanded}
+          {#await getNodes(node)}
+          {:then data}
+            {#if data.nodes}
+              <svelte:self roots={data.nodes} {fetchNodes}/>
+            {/if}
+          {:catch error}
+            <p>{error.message}</p>
+          {/await}
         {/if}
-      </li>
+      {:else}
+        <li>
+          {#if node.nodes}
+            <TreeArrow bind:isExpanded={node.isExpanded} {node} />
+          {:else}
+            <div class="arrow-padding" />
+          {/if}
+          <div class="node-label" on:click={event => onLabelClick(node)}>
+            {node.name} {node.printString}
+          </div>
+          {#if node.nodes && node.isExpanded}
+            <svelte:self roots={node.nodes} {fetchNodes}/>
+          {/if}
+        </li>
+      {/if}
     {/each}
   </ul>
 {/if}
