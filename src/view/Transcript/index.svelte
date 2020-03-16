@@ -4,13 +4,15 @@
   import { sendViewClosed, parsed } from "./../../bridge";
 
   export let logs = [];
-  export let socket;
-
+  let protocol = {
+    onTranscriptMessage
+  }
   function onClear() {
     logs = [];
   }
 
-  function onServerMessage(event) {
+  function onTranscriptMessage(event) {
+    debugger
     const response = parsed(event.detail);
     if (response.messageType === "Handshake" && response.answer) {
       return;
@@ -42,9 +44,7 @@
 <div class="container">
 
   <View
-    let:id
-    on:servermessage={onServerMessage}
-    bind:socket
+    {protocol}
     viewType="Transcript">
     <div class="toolbar">
       <button on:click={onClear}>Clear</button>

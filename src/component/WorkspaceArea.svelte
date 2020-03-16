@@ -14,33 +14,25 @@
   let textarea;
 
   const protocol = {
-    DoIt: () => {
+    onDoIt: () => {
       // no-op on do it answers
     },
-    PrintIt: onPrintItAnswer,
-    DoIt: onDoItAnswer,
-    InspectIt: onInspectItAnswer
+    onPrintIt,
+    onDoIt,
+    onInspectIt
   };
 
   const actions = {
-    KeyD: onDoIt,
-    KeyP: onPrintIt,
-    KeyI: onInspectIt
+    KeyD: doIt,
+    KeyP: printIt,
+    KeyI: inspectIt
   };
 
   onMount(() => {
     textarea = document.getElementById("workspace");
   });
 
-  function onServerMessage(event) {
-    const response = parsed(event.detail);
-    if (response.messageType === "Handshake" && response.answer) {
-      return;
-    }
-    onResponse(response);
-  }
-
-  function onDoIt(event) {
+  function doIt(event) {
     if (!event.metaKey && event.type !== "click") {
       return;
     }
@@ -48,7 +40,7 @@
     sourceCode.length ? sendDoIt(socket, sourceCode) : null;
   }
 
-  function onPrintIt(event) {
+  function printIt(event) {
     if (!event.metaKey && event.type !== "click") {
       return;
     }
@@ -56,7 +48,7 @@
     sourceCode.length ? sendPrintIt(socket, sourceCode) : null;
   }
 
-  function onInspectIt() {
+  function inspectIt() {
     if (!event.metaKey && event.type !== "click") {
       return;
     }
@@ -64,25 +56,16 @@
     sourceCode.length ? sendInspectIt(socket, sourceCode) : null;
   }
 
-  function onResponse(response) {
-    const reaction = protocol[response.messageType];
-    if (reaction) {
-      reaction.call(null, response.answer);
-    } else {
-      throw new Error(`Unsupported message type: ${response.messageType}`);
-    }
-  }
-
-  function onDoItAnswer(answer) {
+  function onDoIt(answer) {
     caretToEndOfLine(textarea);
   }
 
-  function onPrintItAnswer(answer) {
+  function onPrintIt(answer) {
     caretToEndOfLine(textarea);
     insertAtCaret(answer, textarea);
   }
 
-  function onInspectItAnswer(answer) {
+  function onInspectIt(answer) {
     openView("Inspector", { id, answer });
   }
 
@@ -164,13 +147,7 @@
 </style>
 
 <div class="container">
-  <View
-    {id}
-    {name}
-    {title}
-    on:servermessage={onServerMessage}
-    bind:socket
-    viewType="Workspace">
+  <View bind:id {name} {title} {protocol} bind:socket viewType="Workspace">
     <div class="content">
       <textarea
         id="workspace"

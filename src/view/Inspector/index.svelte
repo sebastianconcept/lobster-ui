@@ -8,10 +8,15 @@
   import { sendDoIt, sendPrintIt, sendInspectIt, parsed } from "./../../bridge";
 
   export let id = newHash();
-  export let answer;
+  export let roots=[];
+  let answer;
   let handshakeOptions;
+  let sourceCode = "";
+  const protocol = {
+    onHandshake
+  };
 
-  "Children";
+  // Child views
   let workspace = {
     id: newHash(),
     name: "workspace"
@@ -22,22 +27,26 @@
     name: "introspector"
   };
 
-  let sourceCode = "";
-
+  // Setup the handshake with the id of the introspectee
   const params = new URLSearchParams(window.location.search);
+
   if (!params.has("answer")) {
     throw new Error("Inspector needs the InspectIt answer");
   }
+
   answer = JSON.parse(params.get("answer"));
   handshakeOptions = {
     inspecteeId: answer.id
   };
 
   onMount(() => {
-    document.title = `Inspector on ${answer.inspectee}`;
+    document.title = `Inspector on ${answer.inspecteePrintString}`;
   });
 
-  function onServerMessage() {}
+  function onHandshake(answer) {
+    roots = new Array(answer);
+  }
+
 </script>
 
 <style>
@@ -66,11 +75,11 @@
   <View
     {id}
     {handshakeOptions}
+    {protocol}
     children={{ introspector, workspace }}
-    on:servermessage={onServerMessage}
     viewType="Inspector">
     <div class="tree">
-      <Introspector id={introspector.id} name={introspector.name} />
+      <Introspector id={introspector.id} name={introspector.name} bind:roots />
     </div>
     <div class="display">
       <div>{answer.inspecteePrintString}</div>

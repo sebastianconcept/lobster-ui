@@ -32,6 +32,13 @@ export const sendInspectIt = (socket, sourceCode) =>
     sourceCode
   })
 
+export const sendIntrospect = (socket, nodeSpec) => {
+  sendMessage(socket, {
+    type: 'Introspect',
+    nodeSpec
+  })
+}
+
 export const parsed = rawAnswer => {
   const payload = JSON.parse(rawAnswer)
   return {

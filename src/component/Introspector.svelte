@@ -1,84 +1,39 @@
 <script>
   import { tick } from "svelte";
-
+  import { sendIntrospect } from "./../bridge";
+  import {Deferred} from './../utils'
   import View from "./../view/View/index.svelte";
   import Tree from "./Tree.svelte";
 
-  export let socket;
   export let id;
+  export let socket;
   export let name;
+  export let roots = [];
+  let fetches = {};
+  const protocol = {
+    onIntrospect
+  };
 
-  const roots = [
-    {
-      name: "self",
-      printString: "an Inspector",
-      isExpanded: true,
-      nodes: [
-        {
-          name: "workspace",
-          printString: "a Workspace",
-          isExpanded: false,
-          nodes: [
-            {
-              name: "socket",
-              printString: "a WebSocket"
-            }
-          ]
-        },
-        {
-          name: "instrospector",
-          printString: "an Introspector",
-          isExpanded: false,
-          nodes: "..."
-        },
-        {
-          name: "anotherInstrospector",
-          printString: "an Introspector",
-          isExpanded: false,
-          nodes: "..."
-        },
-        {
-          name: "stream",
-          printString: "a Stream",
-          isExpanded: false,
-          nodes: [
-            {
-              name: "contents",
-              printString: "a String"
-            }
-          ]
-        },
+  /**
+   * Returs the promise that will have the answer of the introspection of the node.
+   * It sends the introspect command to the backend and
+   * stores the promise that will resolve with the answer under the node.id
+   * so later, whenever its corresponding onIntrospect answer arrives, it will resolve as expected.
+   */
+  async function fetchNodes(node) {
+    sendIntrospect(socket, node);
+    fetches[node.id] = new Deferred()
+    return fetches[node.id].promise;
+  }
 
-      ]
+  function onIntrospect(answer) {
+    const node = JSON.parse(answer);
+    const deferred = fetches[node.id];
+    if (!deferred) {
+      throw new Error("Promised fetch not found for node", node);
+    } else {
+      deferred.resolve(node);
     }
-  ];
-
-  async function fetchNodes (node) {
-    console.log("fetchNodes",node);
-    return new Promise(resolve => {
-      console.log("fetchNodes resolve");
-      resolve({
-        ok: true,
-        data: {
-          nodes: [
-            {
-              name: "socket",
-              printString: "a lazy WebSocket"
-            },
-            {
-              name: "point",
-              printString: "a Point",
-              isExpanded: false,
-              nodes: "..."
-            },
-            {
-              name: "description",
-              printString: "a String"
-            }
-          ]
-        }
-      });
-    });
   }
 </script>
 
@@ -96,9 +51,9 @@
 </style>
 
 <div class="wrapper">
-  <View {id} {name} bind:socket viewType="Introspector">
+  <View bind:id {name} {protocol} bind:socket viewType="Introspector">
     <div class="content">
-      <Tree {roots} {fetchNodes} />
+      <Tree bind:roots {fetchNodes} />
     </div>
   </View>
 </div>

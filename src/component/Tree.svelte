@@ -11,13 +11,7 @@
   // export let onClick;
 
   async function getNodes(node) {
-    const response = await fetchNodes(node);
-    const data = response.data;
-    if (response.ok) {
-      return data;
-    } else {
-      throw new Error(data);
-    }
+    return await fetchNodes(node);
   }
 
   function onExpanded(node) {

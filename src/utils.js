@@ -67,3 +67,12 @@ export const openView = (selector, args) => {
   view.show()
   return view
 }
+
+export class Deferred {
+  constructor(){
+    this.promise = new Promise((resolve, reject)=>{
+      this.reject = reject
+      this.resolve = resolve
+    })
+  }
+}
