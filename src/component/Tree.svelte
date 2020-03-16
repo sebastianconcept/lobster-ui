@@ -5,7 +5,6 @@
 
   export let roots;
   export let fetchNodes;
-  let expanded = false;
   // export let onDrag;
   // export let onDrop;
   // export let onClick;
@@ -14,12 +13,12 @@
     return await fetchNodes(node);
   }
 
-  function onExpanded(node) {
-    expanded = true;
+  function onExpanded(event) {
+    event.detail.isExpanded = true
   }
 
-  function onCollapsed(node) {
-    expanded = false;
+  function onCollapsed(event) {
+    event.detail.isExpanded = false
   }
 
   function onLabelClick(node) {
@@ -51,24 +50,26 @@
   <ul>
     {#each roots as node}
       {#if node.nodes && node.nodes === '...'}
-        <TreeArrow
-          bind:isExpanded={node.isExpanded}
-          {node}
-          on:expanded={onExpanded}
-          on:collapsed={onCollapsed} />
-        <div class="node-label" on:click={event => onLabelClick(node)}>
-          {node.name} {node.printString}
-        </div>
-        {#if expanded}
-          {#await getNodes(node)}
-          {:then data}
-            {#if data.nodes}
-              <svelte:self roots={data.nodes} {fetchNodes}/>
-            {/if}
-          {:catch error}
-            <p>{error.message}</p>
-          {/await}
-        {/if}
+        <li>
+          <TreeArrow
+            bind:isExpanded={node.isExpanded}
+            {node}
+            on:expanded={onExpanded}
+            on:collapsed={onCollapsed} />
+          <div class="node-label" on:click={event => onLabelClick(node)}>
+            {node.name} {node.printString}
+          </div>
+          {#if node.isExpanded}
+            {#await getNodes(node)}
+            {:then data}
+              {#if data.nodes}
+                <svelte:self roots={data.nodes} {fetchNodes}/>
+              {/if}
+            {:catch error}
+              <p>{error.message}</p>
+            {/await}
+          {/if}
+        </li>
       {:else}
         <li>
           {#if node.nodes}
