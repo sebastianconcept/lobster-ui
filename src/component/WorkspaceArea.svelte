@@ -57,11 +57,11 @@
   }
 
   function onDoIt(answer) {
-    caretToEndOfLine(textarea);
+    caretToEndOfSelection(textarea);
   }
 
   function onPrintIt(answer) {
-    caretToEndOfLine(textarea);
+    caretToEndOfSelection(textarea);
     insertAtCaret(answer, textarea);
   }
 
@@ -96,7 +96,7 @@
     return textarea.value.substring(start, finish);
   }
 
-  function caretToEndOfLine(textarea) {
+  function caretToEndOfSelection(textarea) {
     const linePosition = getCaretLineNumner(textarea);
     const lines = textarea.value.split("\n").slice(0, linePosition);
     const sizeUpToLineOfCaret = lines.reduce(function(acum, line) {
@@ -113,7 +113,7 @@
   }
 
   function getTextFullLinesUpToCarent(textarea) {
-    return textarea.value.substr(0, textarea.selectionStart).split("\n");
+    return textarea.value.substr(0, textarea.selectionEnd).split("\n");
   }
 
   async function insertAtCaret(text, textarea) {

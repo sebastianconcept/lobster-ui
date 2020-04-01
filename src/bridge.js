@@ -39,6 +39,14 @@ export const sendIntrospect = (socket, nodeSpec) => {
   })
 }
 
+export const sendCallback = (socket, selector, options) => {
+  sendMessage(socket, {
+    type: 'Callback',
+    selector,
+    options
+  })
+}
+
 export const parsed = rawAnswer => {
   const payload = JSON.parse(rawAnswer)
   return {

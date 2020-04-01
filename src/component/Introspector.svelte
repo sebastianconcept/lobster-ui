@@ -1,7 +1,7 @@
 <script>
   import { tick } from "svelte";
-  import { sendIntrospect } from "./../bridge";
-  import {Deferred} from './../utils'
+  import { sendIntrospect, sendCallback } from "./../bridge";
+  import { Deferred } from "./../utils";
   import View from "./../view/View/index.svelte";
   import Tree from "./Tree.svelte";
 
@@ -11,7 +11,8 @@
   export let roots = [];
   let fetches = {};
   const protocol = {
-    onIntrospect
+    onIntrospect,
+    onCallback
   };
 
   /**
@@ -22,18 +23,42 @@
    */
   async function fetchNodes(node) {
     sendIntrospect(socket, node);
-    fetches[node.id] = new Deferred()
+    fetches[node.id] = new Deferred();
     return fetches[node.id].promise;
+  }
+
+  async function fetchMoreElements(loadMoreId) {
+    sendCallback(socket, loadMoreId);
+    fetches[loadMoreId] = new Deferred();
+    return fetches[loadMoreId].promise;
   }
 
   function onIntrospect(answer) {
     const node = JSON.parse(answer);
     const deferred = fetches[node.id];
     if (!deferred) {
-      throw new Error("Promised fetch not found for node", node);
+      throw new Error("Promised not found for", node);
     } else {
       deferred.resolve(node);
+      delete fetches[node.id];
     }
+  }
+
+  function onCallback(answer) {
+    const deferred = fetches[answer.loadMoreId];
+    if (!deferred) {
+      throw new Error("Promised not found for", answer);
+    } else {
+      deferred.resolve(answer.elements);
+      delete fetches[answer.loadMoreId];
+    }
+  }
+
+  function onNodeSelected(event) {
+    // const node = event.detail;
+    // if (node.loadMoreId) {
+    //   fetchMoreElements(node)
+    // }
   }
 </script>
 
@@ -53,7 +78,11 @@
 <div class="wrapper">
   <View bind:id {name} {protocol} bind:socket viewType="Introspector">
     <div class="content">
-      <Tree bind:roots {fetchNodes} />
+      <Tree
+        bind:roots
+        {fetchNodes}
+        {fetchMoreElements}
+        on:nodeselected={onNodeSelected} />
     </div>
   </View>
 </div>

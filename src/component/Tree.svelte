@@ -5,24 +5,50 @@
 
   export let roots;
   export let fetchNodes;
+  export let fetchMoreElements;
   // export let onDrag;
   // export let onDrop;
-  // export let onClick;
+
+  let lazyElements = {};
+
+  $: {
+    roots.forEach(node => (lazyElements[node.id] = node.nodes));
+  }
 
   async function getNodes(node) {
-    return await fetchNodes(node);
+    lazyElements[node.id] = await fetchNodes(node);
+    return lazyElements[node.id];
+  }
+
+  async function getMoreElements(loadMoreId) {
+    return await fetchMoreElements(loadMoreId);
   }
 
   function onExpanded(event) {
-    event.detail.isExpanded = true
+    event.detail.isExpanded = true;
   }
 
   function onCollapsed(event) {
-    event.detail.isExpanded = false
+    event.detail.isExpanded = false;
   }
 
   function onLabelClick(node) {
+    // console.log("onLabelClick", node);
     dispatch("nodeselected", node);
+    if (node.loadMoreId) {
+      dispatch("loadmoreelements", node);
+    }
+  }
+
+  function onNodeSelected(event) {
+    dispatch("nodeselected", event.detail);
+  }
+
+  async function onLoadMore(event, node) {
+    const loadMoreId = event.detail.loadMoreId;
+    const moreElements = await getMoreElements(loadMoreId);
+    lazyElements[node.id].nodes.pop()
+    lazyElements[node.id].nodes = lazyElements[node.id].nodes.concat(moreElements);
   }
 </script>
 
@@ -60,13 +86,15 @@
             {node.name} {node.printString}
           </div>
           {#if node.isExpanded}
-            {#await getNodes(node)}
-            {:then data}
+            {#await getNodes(node) then data}
               {#if data.nodes}
-                <svelte:self roots={data.nodes} {fetchNodes}/>
+                <svelte:self
+                  roots={lazyElements[node.id].nodes}
+                  {fetchNodes}
+                  {fetchMoreElements}
+                  on:nodeselected={onNodeSelected}
+                  on:loadmoreelements={event => onLoadMore(event, data)} />
               {/if}
-            {:catch error}
-              <p>{error.message}</p>
             {/await}
           {/if}
         </li>
@@ -81,7 +109,12 @@
             {node.name} {node.printString}
           </div>
           {#if node.nodes && node.isExpanded}
-            <svelte:self roots={node.nodes} {fetchNodes}/>
+            <svelte:self
+              roots={node.nodes}
+              {fetchNodes}
+              {fetchMoreElements}
+              on:nodeselected={onNodeSelected}
+              on:loadmoreelements={event => onLoadMore(event, node)} />
           {/if}
         </li>
       {/if}
