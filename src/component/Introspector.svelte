@@ -1,9 +1,11 @@
 <script>
-  import { tick } from "svelte";
+  import { createEventDispatcher } from "svelte";
   import { sendIntrospect, sendCallback } from "./../bridge";
   import { Deferred } from "./../utils";
   import View from "./../view/View/index.svelte";
   import Tree from "./Tree.svelte";
+  
+  const dispatch = createEventDispatcher();
 
   export let id;
   export let socket;
@@ -54,11 +56,8 @@
     }
   }
 
-  function onNodeSelected(event) {
-    // const node = event.detail;
-    // if (node.loadMoreId) {
-    //   fetchMoreElements(node)
-    // }
+  function onNodeSelected(node) {
+    dispatch("nodeselected", node);
   }
 </script>
 
@@ -82,7 +81,10 @@
         bind:roots
         {fetchNodes}
         {fetchMoreElements}
-        on:nodeselected={onNodeSelected} />
+        on:nodeselected={event => {
+          event.stopPropagation();
+          onNodeSelected(event.detail);
+        }} />
     </div>
   </View>
 </div>

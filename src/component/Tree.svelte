@@ -32,23 +32,20 @@
     event.detail.isExpanded = false;
   }
 
-  function onLabelClick(node) {
-    // console.log("onLabelClick", node);
+  function onNodeSelected(node) {
     dispatch("nodeselected", node);
     if (node.loadMoreId) {
       dispatch("loadmoreelements", node);
     }
   }
 
-  function onNodeSelected(event) {
-    dispatch("nodeselected", event.detail);
-  }
-
   async function onLoadMore(event, node) {
     const loadMoreId = event.detail.loadMoreId;
     const moreElements = await getMoreElements(loadMoreId);
-    lazyElements[node.id].nodes.pop()
-    lazyElements[node.id].nodes = lazyElements[node.id].nodes.concat(moreElements);
+    lazyElements[node.id].nodes.pop();
+    lazyElements[node.id].nodes = lazyElements[node.id].nodes.concat(
+      moreElements
+    );
   }
 </script>
 
@@ -76,15 +73,17 @@
   <ul>
     {#each roots as node}
       {#if node.nodes && node.nodes === '...'}
-        <li>
+        <li
+          on:click={event => {
+            event.stopPropagation();
+            onNodeSelected(node);
+          }}>
           <TreeArrow
             bind:isExpanded={node.isExpanded}
             {node}
             on:expanded={onExpanded}
             on:collapsed={onCollapsed} />
-          <div class="node-label" on:click={event => onLabelClick(node)}>
-            {node.name} {node.printString}
-          </div>
+          <div class="node-label">{node.name} {node.printString}</div>
           {#if node.isExpanded}
             {#await getNodes(node) then data}
               {#if data.nodes}
@@ -92,28 +91,36 @@
                   roots={lazyElements[node.id].nodes}
                   {fetchNodes}
                   {fetchMoreElements}
-                  on:nodeselected={onNodeSelected}
+                  on:nodeselected={event => {
+                    event.stopPropagation();
+                    onNodeSelected(event.detail);
+                  }}
                   on:loadmoreelements={event => onLoadMore(event, data)} />
               {/if}
             {/await}
           {/if}
         </li>
       {:else}
-        <li>
+        <li
+          on:click={event => {
+            event.stopPropagation();
+            onNodeSelected(node);
+          }}>
           {#if node.nodes}
             <TreeArrow bind:isExpanded={node.isExpanded} {node} />
           {:else}
             <div class="arrow-padding" />
           {/if}
-          <div class="node-label" on:click={event => onLabelClick(node)}>
-            {node.name} {node.printString}
-          </div>
+          <div class="node-label">{node.name} {node.printString}</div>
           {#if node.nodes && node.isExpanded}
             <svelte:self
               roots={node.nodes}
               {fetchNodes}
               {fetchMoreElements}
-              on:nodeselected={onNodeSelected}
+              on:nodeselected={event => {
+                event.stopPropagation();
+                onNodeSelected(event.detail);
+              }}
               on:loadmoreelements={event => onLoadMore(event, node)} />
           {/if}
         </li>
