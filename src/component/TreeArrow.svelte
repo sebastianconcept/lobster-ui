@@ -23,7 +23,7 @@
     position: relative;
     line-height: 1.1em;
     font-size: 0.75em;
-    margin-left: 0;
+    margin-left: 0.2em;
     transition: 150ms;
     color: var(--arrow-sign);
     user-select: none;

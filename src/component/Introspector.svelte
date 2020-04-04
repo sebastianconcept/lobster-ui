@@ -4,7 +4,7 @@
   import { Deferred } from "./../utils";
   import View from "./../view/View/index.svelte";
   import Tree from "./Tree.svelte";
-  
+
   const dispatch = createEventDispatcher();
 
   export let id;
@@ -71,6 +71,7 @@
     overflow-y: scroll;
     margin: 0;
     height: 100%;
+    padding-top: 0.35em;
   }
 </style>
 
