@@ -36,20 +36,25 @@
   }
 
   function onIntrospect(answer) {
-    const node = JSON.parse(answer);
-    const deferred = fetches[node.id];
-    if (!deferred) {
-      throw new Error("Promised not found for", node);
-    } else {
-      deferred.resolve(node);
-      delete fetches[node.id];
+    try {
+      const node = JSON.parse(answer);
+      const deferred = fetches[node.id];
+      if (!deferred) {
+        throw new Error("Promised not found for ", node);
+      } else {
+        deferred.resolve(node);
+        delete fetches[node.id];
+      }
+    } catch (error) {
+      console.error("Problematic answer", answer);
+      throw new Error("Introspection error");
     }
   }
 
   function onCallback(answer) {
     const deferred = fetches[answer.loadMoreId];
     if (!deferred) {
-      throw new Error("Promised not found for", answer);
+      throw new Error("Promised not found for ", answer);
     } else {
       deferred.resolve(answer.elements);
       delete fetches[answer.loadMoreId];
@@ -67,6 +72,7 @@
   }
 
   .content {
+    white-space: nowrap;
     overflow-x: scroll;
     overflow-y: scroll;
     margin: 0;

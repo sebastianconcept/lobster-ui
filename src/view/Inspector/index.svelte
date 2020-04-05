@@ -3,6 +3,7 @@
   import View from "./../View/index.svelte";
   import Introspector from "./../../component/Introspector.svelte";
   import WorkspaceArea from "./../../component/WorkspaceArea.svelte";
+  import SplitPane from "./../../component/SplitPane.svelte";
 
   import { newHash, openView } from "../../utils";
   import {
@@ -61,38 +62,52 @@
 
   function onNodeSelected(event) {
     const node = event.detail;
-    inspecteeDisplayString = node.printString
+    inspecteeDisplayString = node.printString;
     sendCallback(socket, setSelfObjectId, { references: [node.id] });
   }
 
-  function onCallback(answer) {
-
-  }
+  function onCallback(answer) {}
 </script>
 
 <style>
-  .container {
-    display: grid;
+  .wrapper {
     height: 100%;
-    grid-template-rows: auto 80px;
-    grid-template-columns: 30% auto;
-    grid-template-areas:
-      "tree display"
-      "workspace workspace";
   }
 
-  .tree {
-    overflow-x: scroll;
-    white-space: nowrap;
+  .container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  .container :global(section) {
+    position: relative;
+    padding: 42px 0 0 0;
+    height: 100%;
+    box-sizing: border-box;
+  }
+  .container :global(section) > :global(*):first-child {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 42px;
+    box-sizing: border-box;
+  }
+  .container :global(section) > :global(*):last-child {
+    width: 100%;
+    height: 100%;
   }
 
   .workspace {
-    grid-row: 2;
-    grid-column: 1 / span 2;
+    height: 100%;
+  }
+
+  .display {
+    padding: 0.5em 1em;
   }
 </style>
 
-<div class="container">
+<div class="wrapper">
   <View
     {id}
     {handshakeOptions}
@@ -100,18 +115,32 @@
     children={{ introspector, workspace }}
     viewType="Inspector"
     bind:socket>
-    <div class="tree">
-      <Introspector
-        id={introspector.id}
-        name={introspector.name}
-        bind:roots
-        on:nodeselected={onNodeSelected} />
-    </div>
-    <div class="display">
-      <div>{inspecteeDisplayString}</div>
-    </div>
-    <div class="workspace">
-      <WorkspaceArea id={workspace.id} name={workspace.name} />
+    <div class="container">
+      <SplitPane type="vertical" pos="80">
+        <section slot="a">
+          <div class="inspection">
+            <SplitPane type="horizontal" pos="30">
+              <section slot="a">
+                <Introspector
+                  id={introspector.id}
+                  name={introspector.name}
+                  bind:roots
+                  on:nodeselected={onNodeSelected} />
+              </section>
+              <section slot="b">
+                <div class="display">
+                  <div>{inspecteeDisplayString}</div>
+                </div>
+              </section>
+            </SplitPane>
+          </div>
+        </section>
+        <section slot="b" style="height: 100%">
+          <div class="workspace">
+            <WorkspaceArea id={workspace.id} name={workspace.name} />
+          </div>
+        </section>
+      </SplitPane>
     </div>
   </View>
 </div>

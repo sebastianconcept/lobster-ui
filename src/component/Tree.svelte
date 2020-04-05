@@ -59,7 +59,7 @@
 <style>
   ul {
     list-style: none;
-    padding: 0 0.4em 0;
+    padding: 0 1.1em 0;
     height: 100%;
   }
 
