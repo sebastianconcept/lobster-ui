@@ -70,8 +70,12 @@
 </script>
 
 <style>
-  .wrapper {
+  .workspace {
     height: 100%;
+  }
+
+  .display {
+    padding: 0.5em 1em;
   }
 
   .container {
@@ -97,17 +101,9 @@
     width: 100%;
     height: 100%;
   }
-
-  .workspace {
-    height: 100%;
-  }
-
-  .display {
-    padding: 0.5em 1em;
-  }
 </style>
 
-<div class="wrapper">
+<div class="container">
   <View
     {id}
     {handshakeOptions}
@@ -118,7 +114,7 @@
     <div class="container">
       <SplitPane type="vertical" pos="80">
         <section slot="a">
-          <div class="inspection">
+          <div class="container">
             <SplitPane type="horizontal" pos="30">
               <section slot="a">
                 <Introspector

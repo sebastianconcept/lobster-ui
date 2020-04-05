@@ -32,6 +32,12 @@ export const sendInspectIt = (socket, sourceCode) =>
     sourceCode
   })
 
+export const sendBrowseIt = (socket, sourceCode) =>
+  sendMessage(socket, {
+    type: 'BrowseIt',
+    sourceCode
+  })
+
 export const sendIntrospect = (socket, nodeSpec) => {
   sendMessage(socket, {
     type: 'Introspect',

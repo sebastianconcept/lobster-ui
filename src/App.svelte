@@ -6,6 +6,7 @@
   import Transcript from "./view/Transcript/index.svelte";
   import Inspector from "./view/Inspector/index.svelte";
   import REPL from "./view/REPL/index.svelte";
+  import Browser from "./view/Browser/index.svelte";
   import { views, getViewUrl } from "./utils";
 
   export let url = new URL(location.href);
@@ -41,6 +42,9 @@
     {#if isForViewType('REPL')}
       <!-- <REPL bind:this={child} self={child} /> -->
       <REPL />
+    {/if}
+    {#if isForViewType('Browser')}
+      <Browser />
     {/if}
   {/if}
 </main>

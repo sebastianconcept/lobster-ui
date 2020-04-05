@@ -15,6 +15,10 @@
   function onOpenREPL() {
     openView("REPL");
   }
+
+  function onOpenBrowser() {
+    openView("Browser");
+  }
 </script>
 
 <style>
@@ -33,4 +37,5 @@
   <button on:click={onOpenWorkspace}>Open Workspace</button>
   <button on:click={onOpenTranscript}>Open Transcript</button>
   <button on:click={onOpenREPL}>Open REPL</button>
+  <button on:click={onOpenBrowser}>Open Browser</button>
 </section>

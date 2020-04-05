@@ -2,7 +2,13 @@
   import { tick, onMount } from "svelte";
   import View from "./../view/View/index.svelte";
   import { openView } from "../utils";
-  import { sendDoIt, sendPrintIt, sendInspectIt, parsed } from "./../bridge";
+  import {
+    sendDoIt,
+    sendPrintIt,
+    sendInspectIt,
+    sendBrowseIt,
+    parsed
+  } from "./../bridge";
 
   export let socket;
   export let id;
@@ -19,13 +25,15 @@
     },
     onPrintIt,
     onDoIt,
-    onInspectIt
+    onInspectIt,
+    onBrowseIt
   };
 
   const actions = {
     KeyD: doIt,
     KeyP: printIt,
-    KeyI: inspectIt
+    KeyI: inspectIt,
+    KeyB: browseIt
   };
 
   onMount(() => {
@@ -56,6 +64,14 @@
     sourceCode.length ? sendInspectIt(socket, sourceCode) : null;
   }
 
+  function browseIt() {
+    if (!event.metaKey && event.type !== "click") {
+      return;
+    }
+    sourceCode = getSourceCode(textarea);
+    sourceCode.length ? sendBrowseIt(socket, sourceCode) : null;
+  }
+
   function onDoIt(answer) {
     caretToEndOfSelection(textarea);
   }
@@ -67,6 +83,10 @@
 
   function onInspectIt(answer) {
     openView("Inspector", { id, answer });
+  }
+
+  function onBrowseIt(answer) {
+    openView("Browser", { id, answer });
   }
 
   function onKeyDown(event) {
