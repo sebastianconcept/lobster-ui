@@ -25,6 +25,7 @@
     "svelte": "^3.0.0"
   },
   "dependencies": {
-    "electron-window-manager": "^1.0.6"
+    "electron-window-manager": "^1.0.6",
+    "yootils": "0.0.16"
   }
 }
