@@ -56,16 +56,15 @@
 
 <div class="wrapper">
   <p>Classes tree</p>
-  <!-- <View bind:id {name} {protocol} bind:socket viewType="Introspector">
+  <View bind:id {name} {protocol} bind:socket viewType="ClassesHierarchy">
     <div class="content">
       <Tree
         bind:roots
         {fetchNodes}
-        {fetchMoreElements}
         on:nodeselected={event => {
           event.stopPropagation();
           onNodeSelected(event.detail);
         }} />
     </div>
-  </View> -->
+  </View>
 </div>

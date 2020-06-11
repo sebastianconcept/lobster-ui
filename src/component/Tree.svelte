@@ -19,6 +19,7 @@
 
   $: {
     roots.forEach(node => (lazyElements[node.id] = node.nodes));
+    console.log('Tree roots',roots)
   }
 
   async function getNodes(node) {

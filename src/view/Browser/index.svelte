@@ -1,4 +1,5 @@
 <script>
+  import View from "./../View/index.svelte";
   import SplitPane from "./../../component/SplitPane.svelte";
 
   import Classes from "./../../component/Classes.svelte";
@@ -8,12 +9,27 @@
 
   import { onMount } from "svelte";
   import { newHash } from "../../utils";
+
+  export let socket;
+  export let id = newHash();
+
   let classPrintString;
   let answer;
   let handshakeOptions;
   const protocol = {
     onHandshake
   };
+
+  // Child views
+  const newChildReference = name => ({
+    id: newHash(),
+    name: name
+  });
+
+  let classes = newChildReference("classes");
+  let categoriesAndVairables = newChildReference("categoriesAndVairables");
+  let methods = newChildReference("methods");
+  let methodSource = newChildReference("methodSource");
 
   // Setup the handshake with the id of the introspectee
   const params = new URLSearchParams(window.location.search);
@@ -34,7 +50,7 @@
   });
 
   function onHandshake(answer) {
-    console.log("onHandshake", answer);
+    console.log("Browser.onHandshake", answer);
     // roots = new Array(answer.roots);
     // setSelfObjectId = answer.setSelfObjectId;
   }
@@ -67,30 +83,40 @@
 </style>
 
 <div class="container">
-  <SplitPane type="horizontal" pos="30">
-    <section slot="a">
-      <Classes />
-    </section>
-    <section slot="b">
-      <div class="container">
-        <SplitPane type="vertical" pos="50">
-          <section slot="a">
-            <div class="container">
-              <SplitPane type="horizontal" pos="30">
-                <section slot="a">
-                  <CategoriesAndVariables />
-                </section>
-                <section slot="b">
-                  <Methods />
-                </section>
-              </SplitPane>
-            </div>
-          </section>
-          <section slot="b">
-            <MethodSource />
-          </section>
-        </SplitPane>
-      </div>
-    </section>
-  </SplitPane>
+  <View
+    {id}
+    {handshakeOptions}
+    {protocol}
+    children={{ classes, categoriesAndVairables, methods, methodSource }}
+    viewType="Browser"
+    bind:socket>
+    <SplitPane type="horizontal" pos="30">
+      <section slot="a">
+        <Classes id={classes.id} name={classes.name} />
+      </section>
+      <section slot="b">
+        <div class="container">
+          <SplitPane type="vertical" pos="50">
+            <section slot="a">
+              <div class="container">
+                <SplitPane type="horizontal" pos="30">
+                  <section slot="a">
+                    <CategoriesAndVariables
+                      id={categoriesAndVairables.id}
+                      name={categoriesAndVairables.name} />
+                  </section>
+                  <section slot="b">
+                    <Methods id={methods.id} name={methods.name} />
+                  </section>
+                </SplitPane>
+              </div>
+            </section>
+            <section slot="b">
+              <MethodSource id={methodSource.id} name={methodSource.name} />
+            </section>
+          </SplitPane>
+        </div>
+      </section>
+    </SplitPane>
+  </View>
 </div>

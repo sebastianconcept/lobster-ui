@@ -28,15 +28,13 @@
   };
 
   // Child views
-  let workspace = {
+  const newChildReference = name => ({
     id: newHash(),
-    name: "workspace"
-  };
+    name: name
+  });
 
-  let introspector = {
-    id: newHash(),
-    name: "introspector"
-  };
+  let workspace = newChildReference("workspace");
+  let introspector = newChildReference("introspector");
 
   // Setup the handshake with the id of the introspectee
   const params = new URLSearchParams(window.location.search);
@@ -45,7 +43,12 @@
     throw new Error("Inspector needs the InspectIt answer");
   }
 
-  answer = JSON.parse(params.get("answer"));
+  try {
+    answer = JSON.parse(params.get("answer"));
+  } catch (error) {
+    console.warn("Problematic answer:", params.get("answer"));
+    throw new Error("Cannot parse answer");
+  }
   handshakeOptions = {
     inspecteeId: answer.id
   };
@@ -56,6 +59,7 @@
   });
 
   function onHandshake(answer) {
+    console.log("Inspector.onHandshake", answer);
     roots = new Array(answer.roots);
     setSelfObjectId = answer.setSelfObjectId;
   }
@@ -66,7 +70,9 @@
     sendCallback(socket, setSelfObjectId, { references: [node.id] });
   }
 
-  function onCallback(answer) {}
+  function onCallback(answer) {
+    // console.log("Inspector.onCallback", answer);
+  }
 </script>
 
 <style>
