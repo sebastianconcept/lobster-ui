@@ -33,7 +33,7 @@
   });
 
   function doIt(event) {
-    if (!event.metaKey && event.type !== "click") {
+    if (!event.altKey && event.type !== "click") {
       return;
     }
     sourceCode = getSourceCode(textarea);
@@ -41,7 +41,7 @@
   }
 
   function printIt(event) {
-    if (!event.metaKey && event.type !== "click") {
+    if (!event.altKey && event.type !== "click") {
       return;
     }
     sourceCode = getSourceCode(textarea);
@@ -49,7 +49,7 @@
   }
 
   function inspectIt() {
-    if (!event.metaKey && event.type !== "click") {
+    if (!event.altKey && event.type !== "click") {
       return;
     }
     sourceCode = getSourceCode(textarea);
